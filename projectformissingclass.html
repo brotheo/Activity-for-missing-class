@@ -113,6 +113,11 @@
             transform: translateY(-1px);
         }
 
+        .quick-links a.active {
+            background: var(--primary);
+            color: white;
+        }
+
         .grid {
             display: grid;
             gap: clamp(24px, 3vw, 32px);
@@ -419,14 +424,17 @@
 <body>
     <div class="container">
         <header>
-                <div class="tagline">Catch-Up Mini Projects · Weeks 2 & 3</div>
+                <div class="tagline">Catch-Up Mini Projects · Weeks 2, 3, 4 & 6</div>
             <h1>Guided Python Practice for Students Who Missed Class</h1>
-            <p>Each student tackles <strong>one</strong> compact console project aligned with the week they missed. Both options rely entirely on user input (no file loading), reinforce list/dictionary skills, and can be finished in about an hour.</p>
+            <p>Each student tackles <strong>one</strong> compact console project aligned with the week they missed. All projects rely entirely on user input (no file loading), reinforce core Python skills, and can be finished in about an hour.</p>
         </header>
 
         <nav class="quick-links" aria-label="Quick section links">
-            <a href="#project-a">Project A Guide</a>
-            <a href="#project-b">Project B Guide</a>
+            <a href="#" onclick="showProject('tyler')">Tyler's Project</a>
+            <a href="#" onclick="showProject('jade')">Jade's Project</a>
+            <a href="#" onclick="showProject('litong')">Litong's Project</a>
+            <a href="#" onclick="showProject('jade-week6')">Jade's Week 6</a>
+            <a href="#" onclick="showProject('all')">Show All</a>
             <a href="#teacher-notes">Teacher Tips</a>
         </nav>
 
@@ -434,7 +442,7 @@
             <div class="grid">
 
                 <section class="card" id="project-a">
-                    <h2>Project A · Gratitude & Wins Journal</h2>
+                    <h2>Project A · Gratitude & Wins Journal <span style="color: var(--accent); font-size: 0.8em;">(Tyler's Assignment)</span></h2>
                     <p class="project-meta">For students who <strong>attended Week 2</strong> (lists & strings) but missed Week 3 (dictionaries & search). Build a menu-driven journal that records daily gratitude with simple in-memory storage.</p>
 
                     <div class="pill-list">
@@ -465,16 +473,32 @@
                     <div class="step-guide">
                         <div class="guide-step">
                             <h4>Step 1 &mdash; Set up data storage</h4>
-                            <p>Create one list that lives for the entire program and keeps dictionaries for each entry. Import <code>datetime</code> now so it is ready for validation later.</p>
+                            <p><strong>What we're doing:</strong> Setting up the basic structure to store all our journal entries.</p>
+                            <p><strong>Why it matters:</strong> We need a place to keep all entries while the program runs. A list is perfect because it can grow as users add more entries.</p>
+                            <p><strong>Key concepts:</strong></p>
+                            <ul>
+                                <li><code>from datetime import datetime</code> — Brings in Python's date-handling tools so we can check if dates are valid</li>
+                                <li><code>entries = []</code> — Creates an empty list that will hold all journal entries</li>
+                                <li>Each entry will be a dictionary with keys like <code>"date"</code> and <code>"note"</code></li>
+                            </ul>
                             <pre><code>from datetime import datetime
 
 entries = []  # each entry will be {"date": str, "note": str}
 </code></pre>
-                            <div class="apply-box"><strong>Apply it:</strong> Swap the keys if your project tracks something else (for example <code>{"title": ..., "reflection": ...}</code>).</div>
+                            <div class="apply-box"><strong>Apply it:</strong> If tracking something different (like workouts or recipes), change the dictionary keys to match your data (e.g., <code>{"exercise": ..., "duration": ...}</code>).</div>
                         </div>
                         <div class="guide-step">
                             <h4>Step 2 &mdash; Collect a new entry</h4>
-                            <p>Wrap the input prompts inside a function so the main menu can call it whenever the user selects option 1. Validate the date and make sure the note is not empty before saving the dictionary.</p>
+                            <p><strong>What we're doing:</strong> Creating a function that asks the user for a date and note, checks if they're valid, then saves them.</p>
+                            <p><strong>Why it matters:</strong> This function prevents bad data from entering our list. If someone types "abc" for a date or leaves the note blank, we catch it before saving.</p>
+                            <p><strong>How it works:</strong></p>
+                            <ul>
+                                <li><code>input().strip()</code> — Gets user input and removes extra spaces from the ends</li>
+                                <li><code>try...except</code> — Attempts to parse the date; if it fails, we show an error and stop</li>
+                                <li><code>if not note:</code> — Checks if the note is empty after stripping spaces</li>
+                                <li><code>entries.append({...})</code> — Adds a new dictionary to our list</li>
+                                <li><code>return</code> — Exits the function early if validation fails</li>
+                            </ul>
                             <pre><code>def add_entry():
     raw_date = input("Date (YYYY-MM-DD): ").strip()
     try:
@@ -491,11 +515,19 @@ entries = []  # each entry will be {"date": str, "note": str}
     entries.append({"date": raw_date, "note": note})
     print("✅ Entry saved!\n")
 </code></pre>
-                            <div class="apply-box"><strong>Apply it:</strong> Change the prompts and dictionary keys if you are tracking wins, goals, or class takeaways instead of gratitude.</div>
+                            <div class="apply-box"><strong>Apply it:</strong> Customize the <code>input()</code> prompts to match your project theme. For a workout log, ask "What exercise did you do?" instead of "What are you thankful for?"</div>
                         </div>
                         <div class="guide-step">
                             <h4>Step 3 &mdash; Show the existing log</h4>
-                            <p>Formatting the list nicely motivates the user to keep going. Handle the empty-state early so the rest of the function can assume there is data.</p>
+                            <p><strong>What we're doing:</strong> Displaying all saved entries in a numbered, easy-to-read format.</p>
+                            <p><strong>Why it matters:</strong> Users need to see their progress! A well-formatted display makes the journal feel rewarding to use.</p>
+                            <p><strong>How it works:</strong></p>
+                            <ul>
+                                <li><code>if not entries:</code> — Checks if the list is empty first, so we don't try to loop over nothing</li>
+                                <li><code>enumerate(entries, start=1)</code> — Loops through entries and provides both the index (starting at 1) and the entry itself</li>
+                                <li><code>entry['date']</code> — Accesses the "date" value from the dictionary</li>
+                                <li>The <code>return</code> statement exits early if there's nothing to show</li>
+                            </ul>
                             <pre><code>def view_entries():
     if not entries:
         print("(No entries yet — add your first one!)\n")
@@ -506,11 +538,19 @@ entries = []  # each entry will be {"date": str, "note": str}
         print(f"{index}. {entry['date']} — {entry['note']}")
     print()
 </code></pre>
-                            <div class="apply-box"><strong>Apply it:</strong> Reorder the output or add emojis to match the vibe of your project—just keep the loop structure.</div>
+                            <div class="apply-box"><strong>Apply it:</strong> Enhance the output with emojis or colors. For mood tracking, you could display a mood emoji before each entry.</div>
                         </div>
                         <div class="guide-step">
                             <h4>Step 4 &mdash; Search by keyword</h4>
-                            <p>Lowercase both sides of the comparison so the search is case-insensitive. A list comprehension keeps the code short and readable.</p>
+                            <p><strong>What we're doing:</strong> Letting users find entries that contain a specific word or phrase.</p>
+                            <p><strong>Why it matters:</strong> As your journal grows, searching becomes essential. This helps you find patterns or remember specific moments.</p>
+                            <p><strong>How it works:</strong></p>
+                            <ul>
+                                <li><code>.lower()</code> — Converts text to lowercase so "Happy" matches "happy"</li>
+                                <li><code>[... for ... in ... if ...]</code> — List comprehension: a compact way to filter a list</li>
+                                <li><code>keyword in entry["note"].lower()</code> — Checks if the keyword appears anywhere in the note</li>
+                                <li>The <code>if matches:</code> checks if we found anything before trying to display results</li>
+                            </ul>
                             <pre><code>def search_entries():
     keyword = input("Keyword to search for: ").strip().lower()
     if not keyword:
@@ -526,11 +566,20 @@ entries = []  # each entry will be {"date": str, "note": str}
     else:
         print("No matching notes yet.\n")
 </code></pre>
-                            <div class="apply-box"><strong>Apply it:</strong> Swap the condition if you want to match on mood, tags, or any other field you store in the dictionary.</div>
+                            <div class="apply-box"><strong>Apply it:</strong> You can search other fields too! Change <code>entry["note"]</code> to <code>entry["date"]</code> to search by date, or add an <code>or</code> to search multiple fields at once.</div>
                         </div>
                         <div class="guide-step">
                             <h4>Step 5 &mdash; Build the main loop</h4>
-                            <p>Keep the menu in a <code>while True</code> loop. Each branch calls the helper functions you already wrote, and Exit shares a summary before breaking out.</p>
+                            <p><strong>What we're doing:</strong> Creating the menu system that ties all our functions together and keeps the program running.</p>
+                            <p><strong>Why it matters:</strong> This is the "control center" of your program. It presents options, captures the user's choice, and calls the right function.</p>
+                            <p><strong>How it works:</strong></p>
+                            <ul>
+                                <li><code>while True:</code> — Creates an infinite loop that only stops when we <code>break</code></li>
+                                <li><code>if choice == "1":</code> — Checks which option the user picked</li>
+                                <li><code>elif</code> — Short for "else if"; checks the next condition if previous ones were false</li>
+                                <li><code>break</code> — Exits the while loop, ending the program</li>
+                                <li><code>else:</code> — Catches any input that doesn't match options 1-4</li>
+                            </ul>
                             <pre><code>def main():
     while True:
         print("\nMenu: (1) Add (2) View (3) Search (4) Exit")
@@ -551,7 +600,7 @@ entries = []  # each entry will be {"date": str, "note": str}
 if __name__ == "__main__":
     main()
 </code></pre>
-                            <div class="apply-box"><strong>Apply it:</strong> Rephrase the menu text to match your project, but keep the loop pattern so each option stays accessible.</div>
+                            <div class="apply-box"><strong>Apply it:</strong> Add more menu options by adding more <code>elif</code> branches. You could add "(5) Delete entry" or "(6) Edit entry" to expand functionality.</div>
                         </div>
                     </div>
 
@@ -586,7 +635,7 @@ if __name__ == "__main__":
                 </section>
 
                 <section class="card" id="project-b">
-                    <h2>Project B · Smart Shopping Helper</h2>
+                    <h2>Project B · Smart Shopping Helper <span style="color: var(--accent); font-size: 0.8em;">(Jade's Assignment)</span></h2>
                     <p class="project-meta">For students who <strong>attended Week 3</strong> (dictionaries & search) but missed Week 2 (loops & lists). Create a tidy shopping helper that stores items in memory, tracks quantities, and stays responsive to user input.</p>
 
                     <div class="pill-list">
@@ -770,13 +819,440 @@ if __name__ == "__main__":
                     </div>
                 </section>
 
+                <section class="card" id="project-c">
+                    <h2>Project C · Interactive Randomizer Tools <span style="color: var(--accent); font-size: 0.8em;">(Litong's Assignment)</span></h2>
+                    <p class="project-meta">For students who missed <strong>Week 4</strong> (random module & interactive menus). Build a multi-tool randomizer with dice rolling, coin flipping, and name picking using Python's random module.</p>
+
+                    <div class="pill-list">
+                        <span class="pill">Random Module</span>
+                        <span class="pill">Menu-Driven Program</span>
+                        <span class="pill">User Interaction</span>
+                        <span class="pill">List Management</span>
+                    </div>
+
+                    <h3>Learning objectives</h3>
+                    <ul>
+                        <li>Master the <code>random</code> module functions: <code>randint()</code> and <code>choice()</code>.</li>
+                        <li>Create a persistent menu loop that handles multiple user operations.</li>
+                        <li>Manage dynamic lists where users can add items during program execution.</li>
+                        <li>Practice input validation and provide friendly error messages.</li>
+                    </ul>
+
+                    <h3>Checklist before coding</h3>
+                    <ol class="steps">
+                        <li>Create a file named <code>randomizer_tools.py</code> and import the <code>random</code> module at the top.</li>
+                        <li>Plan your menu structure with 5 clear options including quit functionality.</li>
+                        <li>Initialize an empty list for names that persists throughout the program session.</li>
+                        <li>Test each randomizer function individually before building the full menu.</li>
+                        <li>Add emojis and clear messages to make the interface engaging and user-friendly.</li>
+                    </ol>
+
+                    <h3>Implementation walkthrough</h3>
+                    <div class="step-guide">
+                        <div class="guide-step">
+                            <h4>Step 1 &mdash; Set up the program structure</h4>
+                            <p><strong>What we're doing:</strong> Importing the tools we need and creating the initial welcome message.</p>
+                            <p><strong>Why it matters:</strong> The <code>random</code> module gives us access to functions that generate random numbers and make random choices—essential for games and randomizer tools.</p>
+                            <p><strong>How it works:</strong></p>
+                            <ul>
+                                <li><code>import random</code> — Brings in Python's random number generator</li>
+                                <li><code>print()</code> — Displays welcome messages to make the program feel friendly</li>
+                                <li><code>names = []</code> — Creates an empty list that will store names users add during the session</li>
+                                <li>This list persists throughout the program, so names stay available for the name picker</li>
+                            </ul>
+                            <pre><code>import random
+
+print("🎲🪙👥 Welcome to the Randomizer Tools!")
+print("You can roll dice, toss a coin, or pick a name.")
+
+# Start with an empty name list, let user add names
+names = []
+</code></pre>
+                            <div class="apply-box"><strong>Apply it:</strong> The <code>names</code> list could be pre-populated with default names if you want: <code>names = ["Alice", "Bob", "Charlie"]</code></div>
+                        </div>
+                        <div class="guide-step">
+                            <h4>Step 2 &mdash; Create the main menu loop</h4>
+                            <p>Build a persistent menu that keeps running until the user chooses to quit. Each option branches to different randomizer functions.</p>
+                            <pre><code>while True:
+    print("\n--- MENU ---")
+    print("1. Roll Dice")
+    print("2. Toss Coin")
+    print("3. Pick Random Name")
+    print("4. Add a Name")
+    print("5. Quit")
+
+    choice = input("Choose an option (1-5): ")
+</code></pre>
+                            <div class="apply-box"><strong>Apply it:</strong> The menu stays consistent and clear, with numbered options that are easy for users to remember.</div>
+                        </div>
+                        <div class="guide-step">
+                            <h4>Step 3 &mdash; Implement dice rolling with user input</h4>
+                            <p><strong>What we're doing:</strong> Letting the user roll multiple dice and see each result.</p>
+                            <p><strong>Why it matters:</strong> This demonstrates how to use <code>random.randint()</code> and how loops can repeat actions multiple times.</p>
+                            <p><strong>How it works:</strong></p>
+                            <ul>
+                                <li><code>int(input(...))</code> — Gets user input and converts it from text to a number</li>
+                                <li><code>for i in range(num):</code> — Repeats the dice roll <code>num</code> times</li>
+                                <li><code>random.randint(1, 6)</code> — Generates a random integer from 1 to 6 (inclusive on both ends)</li>
+                                <li><code>i+1</code> — Since <code>i</code> starts at 0, we add 1 to display "Dice 1" instead of "Dice 0"</li>
+                            </ul>
+                            <pre><code>    if choice == "1":
+        # Ask how many dice to roll
+        num = int(input("How many dice do you want to roll? "))
+        for i in range(num):
+            dice = random.randint(1, 6)
+            print(f"Dice {i+1}: 🎲 {dice}")
+</code></pre>
+                            <div class="apply-box"><strong>Apply it:</strong> Change <code>random.randint(1, 6)</code> to <code>random.randint(1, 20)</code> for a 20-sided die, or add a menu to let users choose die types.</div>
+                        </div>
+                        <div class="guide-step">
+                            <h4>Step 4 &mdash; Add coin flipping and name selection</h4>
+                            <p><strong>What we're doing:</strong> Implementing two more randomizers using <code>random.choice()</code>.</p>
+                            <p><strong>Why it matters:</strong> <code>random.choice()</code> is perfect when you need to pick one item from a list randomly—whether it's "Heads" or "Tails" or a person's name.</p>
+                            <p><strong>How it works:</strong></p>
+                            <ul>
+                                <li><code>random.choice(["Heads", "Tails"])</code> — Randomly picks one string from the list</li>
+                                <li><code>if names:</code> — Checks if the list has at least one name (prevents errors)</li>
+                                <li><code>input("Press Enter...")</code> — Creates dramatic pause; user hits Enter to continue</li>
+                                <li>The <code>else</code> branch guides users to add names first if the list is empty</li>
+                            </ul>
+                            <pre><code>    elif choice == "2":
+        flip = input("Press Enter to flip the coin... ")
+        coin = random.choice(["Heads", "Tails"])
+        print("🪙 Result:", coin)
+
+    elif choice == "3":
+        if names:
+            input("Press Enter to pick a random name... ")
+            chosen = random.choice(names)
+            print("🎉 Selected:", chosen)
+        else:
+            print("⚠️ No names available! Add some first.")
+</code></pre>
+                            <div class="apply-box"><strong>Apply it:</strong> <code>random.choice()</code> works with any list! Try <code>random.choice(["Yes", "No", "Maybe"])</code> for a decision maker, or <code>random.choice(["Rock", "Paper", "Scissors"])</code> for a game.</div>
+                        </div>
+                        <div class="guide-step">
+                            <h4>Step 5 &mdash; Complete with name management and exit</h4>
+                            <p>Allow users to add names dynamically and provide a clean exit with input validation for invalid menu choices.</p>
+                            <pre><code>    elif choice == "4":
+        new_name = input("Enter a name to add: ")
+        names.append(new_name)
+        print(f"✅ {new_name} added to the list!")
+
+    elif choice == "5":
+        print("👋 Goodbye!")
+        break
+
+    else:
+        print("❌ Invalid choice. Please pick 1-5.")
+</code></pre>
+                            <div class="apply-box"><strong>Apply it:</strong> The <code>break</code> statement exits the while loop cleanly, and the else clause handles any invalid input gracefully.</div>
+                        </div>
+                    </div>
+
+                    <h3>Key concepts from Week 4</h3>
+                    <div class="notes">
+                        <p><strong>This project reinforces these Week 4 learning goals:</strong></p>
+                        <ul>
+                            <li><strong>Random Module Mastery:</strong> <code>random.randint()</code> for number ranges and <code>random.choice()</code> for list selection</li>
+                            <li><strong>Interactive Menus:</strong> Persistent loops with clear option handling and user input validation</li>
+                            <li><strong>State Management:</strong> Maintaining data (names list) across multiple program operations</li>
+                            <li><strong>User Experience:</strong> Engaging prompts, emojis, and helpful error messages for better interaction</li>
+                        </ul>
+                    </div>
+
+                    <h3>Rubric (5 points)</h3>
+                    <div class="rubric">
+                        <div class="badge">Random functions<div><span>Correct use of randint() and choice()</span></div></div>
+                        <div class="badge">Menu system<div><span>Persistent loop, clear options, exit handling</span></div></div>
+                        <div class="badge">Name management<div><span>Add names, handle empty list gracefully</span></div></div>
+                        <div class="badge">User interaction<div><span>Engaging prompts, clear feedback</span></div></div>
+                        <div class="badge">Code structure<div><span>Clean organization, good variable names</span></div></div>
+                    </div>
+
+                    <h3>Level-up ideas</h3>
+                    <div class="notes">
+                        <ul>
+                            <li>Add different types of dice (4-sided, 8-sided, 20-sided) with user selection.</li>
+                            <li>Create a "weighted coin" option that isn't perfectly 50/50.</li>
+                            <li>Allow users to remove names from the list or view all current names.</li>
+                            <li>Add a "pick teams" feature that randomly divides names into groups.</li>
+                            <li>Track statistics like how many times each name has been picked.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="card" id="project-d">
+                    <h2>Project D · Number Guessing Game <span style="color: var(--accent); font-size: 0.8em;">(Jade's Week 6 Assignment)</span></h2>
+                    <p class="project-meta">For students who missed <strong>Week 6</strong> (loops with limited attempts & game logic). The computer picks a random number, and the player tries to guess it with helpful hints and a limited number of tries.</p>
+
+                    <div class="pill-list">
+                        <span class="pill">Game Logic</span>
+                        <span class="pill">While Loops</span>
+                        <span class="pill">Conditional Hints</span>
+                        <span class="pill">Replay Options</span>
+                    </div>
+
+                    <h3>Learning objectives</h3>
+                    <ul>
+                        <li>Use <code>while</code> loops with counters to limit the number of attempts.</li>
+                        <li>Generate random numbers and compare user input against a target value.</li>
+                        <li>Provide dynamic hints based on how close the guess is to the target.</li>
+                        <li>Implement replay functionality to let users play multiple rounds.</li>
+                    </ul>
+
+                    <h3>Checklist before coding</h3>
+                    <ol class="steps">
+                        <li>Create a file named <code>number_guess.py</code> and import the <code>random</code> module.</li>
+                        <li>Decide on the number range (e.g., 1-100) and maximum number of attempts (e.g., 7 tries).</li>
+                        <li>Plan how to give hints: "Too high", "Too low", or special messages for being very close.</li>
+                        <li>Design the game loop to track remaining attempts and handle win/lose conditions.</li>
+                        <li>Add a replay option so players can start a new game without restarting the program.</li>
+                    </ol>
+
+                    <h3>Implementation walkthrough</h3>
+                    <div class="step-guide">
+                        <div class="guide-step">
+                            <h4>Step 1 &mdash; Setup and game initialization</h4>
+                            <p>Import the random module and set up the game parameters. Use constants for easy adjustments later.</p>
+                            <pre><code>import random
+
+print("🎯 Number Guessing Game")
+print("I'm thinking of a number between 1 and 100.")
+print("You have 7 tries to guess it!\n")
+
+MAX_ATTEMPTS = 7
+MIN_NUMBER = 1
+MAX_NUMBER = 100
+</code></pre>
+                            <div class="apply-box"><strong>Apply it:</strong> You can adjust MAX_ATTEMPTS or the number range to make the game easier or harder.</div>
+                        </div>
+                        <div class="guide-step">
+                            <h4>Step 2 &mdash; Generate the secret number and game loop</h4>
+                            <p><strong>What we're doing:</strong> Picking a random secret number and creating a loop that gives the player multiple chances to guess it.</p>
+                            <p><strong>Why it matters:</strong> This is the core game mechanic—limiting attempts adds challenge and strategy.</p>
+                            <p><strong>How it works:</strong></p>
+                            <ul>
+                                <li><code>random.randint(MIN_NUMBER, MAX_NUMBER)</code> — Computer picks a random number within the range</li>
+                                <li><code>attempts_left = MAX_ATTEMPTS</code> — Start with full attempts (7 in this case)</li>
+                                <li><code>while attempts_left > 0:</code> — Loop continues as long as player has tries remaining</li>
+                                <li><code>if not guess.isdigit():</code> — Checks if input is a valid number</li>
+                                <li><code>continue</code> — Skips to next loop iteration without counting as an attempt</li>
+                                <li><code>attempts_left -= 1</code> — Subtract 1 from remaining attempts (shorthand for <code>attempts_left = attempts_left - 1</code>)</li>
+                            </ul>
+                            <pre><code>secret_number = random.randint(MIN_NUMBER, MAX_NUMBER)
+attempts_left = MAX_ATTEMPTS
+
+while attempts_left > 0:
+    print(f"Attempts remaining: {attempts_left}")
+    guess = input("Enter your guess: ")
+    
+    # Validate input
+    if not guess.isdigit():
+        print("❌ Please enter a valid number.\n")
+        continue
+    
+    guess = int(guess)
+    attempts_left -= 1
+    
+    # ... checking logic will go here ...
+</code></pre>
+                            <div class="apply-box"><strong>Apply it:</strong> Notice that validation errors don't count as attempts—the <code>continue</code> restarts the loop before <code>attempts_left -= 1</code> runs. This is fair to the player!</div>
+                        </div>
+                        <div class="guide-step">
+                            <h4>Step 3 &mdash; Check the guess and provide hints</h4>
+                            <p><strong>What we're doing:</strong> Comparing the player's guess to the secret number and giving helpful feedback.</p>
+                            <p><strong>Why it matters:</strong> Good hints make the game fun and beatable. Tiered hints (hot/warm/cold) add excitement beyond just "higher/lower".</p>
+                            <p><strong>How it works:</strong></p>
+                            <ul>
+                                <li><code>if guess == secret_number:</code> — Exact match means the player won!</li>
+                                <li><code>break</code> — Exits the loop immediately since the game is over</li>
+                                <li><code>abs(guess - secret_number)</code> — Gets absolute difference (always positive) to measure closeness</li>
+                                <li><code>if difference <= 5:</code> — Series of conditions checking proximity from closest to farthest</li>
+                                <li>The final <code>if guess < secret_number:</code> tells them which direction to try</li>
+                            </ul>
+                            <pre><code>    # Check if guess is correct
+    if guess == secret_number:
+        print(f"🎉 Congratulations! You guessed it in {MAX_ATTEMPTS - attempts_left} tries!")
+        break
+    
+    # Calculate difference for hint quality
+    difference = abs(guess - secret_number)
+    
+    # Give hints based on how close they are
+    if difference <= 5:
+        print("🔥 So close! You're burning hot!")
+    elif difference <= 10:
+        print("♨️ Getting warm!")
+    elif difference <= 20:
+        print("❄️ A bit cold...")
+    else:
+        print("🧊 Very cold!")
+    
+    # Tell them if they should guess higher or lower
+    if guess < secret_number:
+        print("📈 Try a HIGHER number.\n")
+    else:
+        print("📉 Try a LOWER number.\n")
+</code></pre>
+                            <div class="apply-box"><strong>Apply it:</strong> Adjust the hint thresholds to make the game easier or harder. For a number range of 1-200, you might use <code>difference <= 10</code> for "burning hot" instead of 5.</div>
+                        </div>
+                        <div class="guide-step">
+                            <h4>Step 4 &mdash; Handle game over condition</h4>
+                            <p><strong>What we're doing:</strong> Displaying the secret number when the player runs out of attempts.</p>
+                            <p><strong>Why it matters:</strong> The <code>while...else</code> pattern is a Python feature that many beginners don't know—it's perfect for "loop completed normally" scenarios.</p>
+                            <p><strong>How it works:</strong></p>
+                            <ul>
+                                <li>The <code>else:</code> clause is attached to the <code>while</code> loop (not an <code>if</code>)</li>
+                                <li>It runs ONLY if the loop completes normally (reaches <code>attempts_left == 0</code>)</li>
+                                <li>If the player guesses correctly, the <code>break</code> statement prevents the <code>else</code> from running</li>
+                                <li>This avoids needing a separate "did they win?" flag variable</li>
+                            </ul>
+                            <pre><code>else:
+    # This runs if the loop completes without hitting 'break'
+    print(f"💔 Game Over! The number was {secret_number}.")
+</code></pre>
+                            <div class="apply-box"><strong>Apply it:</strong> The <code>while...else</code> pattern works with any loop. It's useful whenever you want to do something special if a loop finishes without being interrupted by <code>break</code>.</div>
+                        </div>
+                        <div class="guide-step">
+                            <h4>Step 5 &mdash; Add replay functionality</h4>
+                            <p><strong>What we're doing:</strong> Wrapping the entire game in another loop so players can play multiple rounds without restarting the program.</p>
+                            <p><strong>Why it matters:</strong> This creates a better user experience—no need to restart the program after every game.</p>
+                            <p><strong>How it works:</strong></p>
+                            <ul>
+                                <li>The outer <code>while True:</code> creates an infinite loop for replays</li>
+                                <li>All the game logic from steps 2-4 goes inside this outer loop</li>
+                                <li>After each game ends, we ask if they want to play again</li>
+                                <li><code>if play_again != 'yes':</code> — Any answer other than "yes" exits the program</li>
+                                <li>The separator line (<code>"="*40</code>) creates 40 equal signs for visual clarity between games</li>
+                            </ul>
+                            <pre><code>while True:
+    # ... entire game code from steps 2-4 goes here ...
+    
+    # Ask to play again
+    play_again = input("\nPlay again? (yes/no): ").lower()
+    if play_again != 'yes':
+        print("👋 Thanks for playing! Goodbye!")
+        break
+    
+    print("\n" + "="*40 + "\n")  # Visual separator between games
+</code></pre>
+                            <div class="apply-box"><strong>Apply it:</strong> You can make the replay check more flexible: <code>if play_again in ['yes', 'y', 'yeah']:</code> would accept multiple affirmative responses.</div>
+                        </div>
+                    </div>
+
+                    <h3>Full Code Example</h3>
+                    <pre><code>import random
+
+print("🎯 Number Guessing Game")
+print("I'm thinking of a number between 1 and 100.")
+print("You have 7 tries to guess it!\n")
+
+MAX_ATTEMPTS = 7
+MIN_NUMBER = 1
+MAX_NUMBER = 100
+
+while True:
+    secret_number = random.randint(MIN_NUMBER, MAX_NUMBER)
+    attempts_left = MAX_ATTEMPTS
+
+    while attempts_left > 0:
+        print(f"Attempts remaining: {attempts_left}")
+        guess = input("Enter your guess: ")
+        
+        if not guess.isdigit():
+            print("❌ Please enter a valid number.\n")
+            continue
+        
+        guess = int(guess)
+        attempts_left -= 1
+        
+        if guess == secret_number:
+            print(f"🎉 Congratulations! You guessed it in {MAX_ATTEMPTS - attempts_left} tries!")
+            break
+        
+        difference = abs(guess - secret_number)
+        
+        if difference <= 5:
+            print("🔥 So close! You're burning hot!")
+        elif difference <= 10:
+            print("♨️ Getting warm!")
+        elif difference <= 20:
+            print("❄️ A bit cold...")
+        else:
+            print("🧊 Very cold!")
+        
+        if guess < secret_number:
+            print("📈 Try a HIGHER number.\n")
+        else:
+            print("📉 Try a LOWER number.\n")
+    else:
+        print(f"💔 Game Over! The number was {secret_number}.")
+    
+    play_again = input("\nPlay again? (yes/no): ").lower()
+    if play_again != 'yes':
+        print("👋 Thanks for playing! Goodbye!")
+        break
+    
+    print("\n" + "="*40 + "\n")
+</code></pre>
+
+                    <h3>Key concepts from Week 6</h3>
+                    <div class="notes">
+                        <p><strong>This project reinforces these Week 6 learning goals:</strong></p>
+                        <ul>
+                            <li><strong>Loop Control:</strong> Using counters to limit iterations and track progress</li>
+                            <li><strong>While...Else:</strong> Special Python feature where <code>else</code> runs if loop completes normally (without <code>break</code>)</li>
+                            <li><strong>Nested Loops:</strong> Outer loop for replaying, inner loop for game rounds</li>
+                            <li><strong>Conditional Logic:</strong> Multiple conditions to provide different hints based on proximity</li>
+                            <li><strong>Input Validation:</strong> Checking if input is numeric before converting and using it</li>
+                        </ul>
+                    </div>
+
+                    <h3>Rubric (5 points)</h3>
+                    <div class="rubric">
+                        <div class="badge">Random number<div><span>Generates and compares correctly</span></div></div>
+                        <div class="badge">Attempt tracking<div><span>Limits tries, counts properly</span></div></div>
+                        <div class="badge">Hint system<div><span>Provides helpful, tiered feedback</span></div></div>
+                        <div class="badge">Win/Lose logic<div><span>Handles both outcomes correctly</span></div></div>
+                        <div class="badge">Replay feature<div><span>Clean restart without program exit</span></div></div>
+                    </div>
+
+                    <h3>Level-up ideas</h3>
+                    <div class="notes">
+                        <ul>
+                            <li>Add difficulty levels that change the number range and attempts (Easy: 1-50 with 10 tries, Hard: 1-200 with 5 tries).</li>
+                            <li>Track and display statistics: games played, win rate, average attempts needed to win.</li>
+                            <li>Add a "hint" option that costs 1 attempt but reveals if the number is even/odd or divisible by 5.</li>
+                            <li>Create a two-player mode where players take turns, and whoever guesses in fewer attempts wins.</li>
+                            <li>Add a scoring system where fewer attempts = more points.</li>
+                        </ul>
+                    </div>
+                </section>
+
                 <section class="card" id="teacher-notes">
                     <h2>Teacher notes & facilitation tips</h2>
                     <div class="notes">
+                        <p><strong>Timeline & Submission Requirements:</strong></p>
+                        <ul>
+                            <li><strong>Deadline:</strong> Students must complete their assigned project before our next class meeting.</li>
+                            <li><strong>Submission:</strong> Email the completed Python code to <strong>Logiscool.main@gmail.com</strong> (this email address will be updated soon).</li>
+                            <li><strong>File naming:</strong> Use format "[StudentName]_Week[X]_Project.py" (e.g., "Tyler_Week3_Project.py")</li>
+                        </ul>
+                        
+                        <p><strong>In-Class Facilitation:</strong></p>
                         <ul>
                             <li>Budget 40–60 minutes per project. Encourage students to narrate their logic as they code.</li>
                             <li>Because everything stays in memory, prompt students to run through multiple examples in one session and discuss data loss after exit.</li>
-                            <li>If they finish early, let them tackle a “Level-up idea” or add polite error messages/emojis to personalize the UX.</li>
+                                                        <li>If they finish early, let them tackle a "Level-up idea" or add polite error messages/emojis to personalize the UX.</li>
+                            <li>Remind students to test all menu options thoroughly before submitting their code.</li>
+                        </ul>
+                        
+                        <p><strong>Assessment Focus:</strong></p>
+                        <ul>
+                            <li>Verify the code runs without errors and handles invalid input gracefully.</li>
+                            <li>Check that students demonstrate understanding of the week's key concepts (see individual project rubrics).</li>
+                            <li>Encourage clean code structure with meaningful variable names and helpful comments.</li>
                         </ul>
                     </div>
                 </section>
@@ -788,5 +1264,95 @@ if __name__ == "__main__":
             <p><strong>Goal:</strong> Help absent students rebuild confidence quickly while reinforcing the exact skills from the missed lesson — all using interactive input-driven practice. Both projects can later be extended with file saving once they demonstrate mastery.</p>
         </footer>
     </div>
+
+    <script>
+        function showProject(student) {
+            const projectA = document.getElementById('project-a');
+            const projectB = document.getElementById('project-b');
+            const projectC = document.getElementById('project-c');
+            const projectD = document.getElementById('project-d');
+            const teacherNotes = document.getElementById('teacher-notes');
+            
+            // Remove active class from all links
+            document.querySelectorAll('.quick-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            if (student === 'tyler') {
+                projectA.style.display = 'block';
+                projectB.style.display = 'none';
+                projectC.style.display = 'none';
+                projectD.style.display = 'none';
+                teacherNotes.style.display = 'block';
+                
+                // Update header to personalize for Tyler
+                document.querySelector('header h1').textContent = 'Tyler\'s Python Catch-Up Project';
+                document.querySelector('header p').textContent = 'Complete the Gratitude & Wins Journal project to practice dictionaries and search functionality. This project uses only user input (no file loading) and should take about an hour.';
+                
+                // Highlight Tyler's button
+                document.querySelector('a[onclick="showProject(\'tyler\')"]').classList.add('active');
+                
+            } else if (student === 'jade') {
+                projectA.style.display = 'none';
+                projectB.style.display = 'block';
+                projectC.style.display = 'none';
+                projectD.style.display = 'none';
+                teacherNotes.style.display = 'block';
+                
+                // Update header to personalize for Jade
+                document.querySelector('header h1').textContent = 'Jade\'s Python Catch-Up Project (Week 2)';
+                document.querySelector('header p').textContent = 'Complete the Smart Shopping Helper project to practice loops and list operations. This project uses only user input (no file loading) and should take about an hour.';
+                
+                // Highlight Jade's button
+                document.querySelector('a[onclick="showProject(\'jade\')"]').classList.add('active');
+                
+            } else if (student === 'litong') {
+                projectA.style.display = 'none';
+                projectB.style.display = 'none';
+                projectC.style.display = 'block';
+                projectD.style.display = 'none';
+                teacherNotes.style.display = 'block';
+                
+                // Update header to personalize for Litong
+                document.querySelector('header h1').textContent = 'Litong\'s Python Catch-Up Project';
+                document.querySelector('header p').textContent = 'Complete the Interactive Randomizer Tools project to practice the random module and menu-driven programming. This project uses only user input and should take about an hour.';
+                
+                // Highlight Litong's button
+                document.querySelector('a[onclick="showProject(\'litong\')"]').classList.add('active');
+                
+            } else if (student === 'jade-week6') {
+                projectA.style.display = 'none';
+                projectB.style.display = 'none';
+                projectC.style.display = 'none';
+                projectD.style.display = 'block';
+                teacherNotes.style.display = 'block';
+                
+                // Update header to personalize for Jade Week 6
+                document.querySelector('header h1').textContent = 'Jade\'s Python Catch-Up Project (Week 6)';
+                document.querySelector('header p').textContent = 'Complete the Number Guessing Game project to practice loops with limited attempts, conditional hints, and replay options. This project should take about an hour.';
+                
+                // Highlight Jade Week 6 button
+                document.querySelector('a[onclick="showProject(\'jade-week6\')"]').classList.add('active');
+                
+            } else {
+                // Show all projects (teacher view)
+                projectA.style.display = 'block';
+                projectB.style.display = 'block';
+                projectC.style.display = 'block';
+                projectD.style.display = 'block';
+                teacherNotes.style.display = 'block';
+                
+                // Reset header to original
+                document.querySelector('header h1').textContent = 'Guided Python Practice for Students Who Missed Class';
+                document.querySelector('header p').textContent = 'Each student tackles one compact console project aligned with the week they missed. All projects rely entirely on user input (no file loading), reinforce core Python skills, and can be finished in about an hour.';
+                
+                // Highlight Show All button
+                document.querySelector('a[onclick="showProject(\'all\')"]').classList.add('active');
+            }
+        }
+        
+        // Show all projects by default
+        showProject('all');
+    </script>
 </body>
 </html>
