@@ -424,16 +424,17 @@
 <body>
     <div class="container">
         <header>
-                <div class="tagline">Catch-Up Mini Projects · Weeks 2, 3, 4 & 6</div>
+                <div class="tagline">Catch-Up Mini Projects · Weeks 2, 3, 4, 6 & 9</div>
             <h1>Guided Python Practice for Students Who Missed Class</h1>
             <p>Each student tackles <strong>one</strong> compact console project aligned with the week they missed. All projects rely entirely on user input (no file loading), reinforce core Python skills, and can be finished in about an hour.</p>
         </header>
 
         <nav class="quick-links" aria-label="Quick section links">
             <a href="#" onclick="showProject('tyler')">Tyler's Project</a>
-            <a href="#" onclick="showProject('jade')">Jade's Project</a>
+            <a href="#" onclick="showProject('jade')">Jade's Week 2</a>
             <a href="#" onclick="showProject('litong')">Litong's Project</a>
             <a href="#" onclick="showProject('jade-week6')">Jade's Week 6</a>
+            <a href="#" onclick="showProject('jade-week9')">Jade's Week 9</a>
             <a href="#" onclick="showProject('all')">Show All</a>
             <a href="#teacher-notes">Teacher Tips</a>
         </nav>
@@ -1230,6 +1231,224 @@ while True:
                     </div>
                 </section>
 
+                <section class="card" id="project-e">
+                    <h2>Project E · Typing Speed Test <span style="color: var(--accent); font-size: 0.8em;">(Jade's Week 9 Assignment)</span></h2>
+                    
+                    <div class="notes">
+                        <p><strong>Overview:</strong> Build a typing speed test that measures WPM (words per minute) and accuracy. You'll complete two functions that calculate these metrics using timing and string comparison.</p>
+                        <p><strong>Week 9 Focus:</strong> Working with the <code>time</code> module, string methods, <code>zip()</code> function, and mathematical calculations.</p>
+                    </div>
+
+                    <h3>Learning objectives</h3>
+                    <ul class="checklist">
+                        <li>Use <code>time.time()</code> to measure elapsed time in seconds</li>
+                        <li>Apply <code>split()</code> to count words in a sentence</li>
+                        <li>Use <code>zip()</code> to iterate through two strings simultaneously</li>
+                        <li>Calculate WPM (words per minute) from word count and elapsed time</li>
+                        <li>Calculate accuracy percentage by comparing two strings character-by-character</li>
+                        <li>Format floating-point numbers with <code>:.2f</code> for clean output</li>
+                    </ul>
+
+                    <h3>Implementation checklist</h3>
+                    <ol class="steps">
+                        <li><strong>Complete the WPM function:</strong> Divide words by elapsed seconds, then multiply by 60 to get words per minute</li>
+                        <li><strong>Complete the accuracy function:</strong> Count matching characters, then divide by total length and multiply by 100 for percentage</li>
+                        <li><strong>Test your functions:</strong> Run the typing test multiple times to verify calculations are correct</li>
+                        <li><strong>Verify edge cases:</strong> Try typing the sentence perfectly, and try typing something completely different</li>
+                    </ol>
+
+                    <h3>Step-by-step guide</h3>
+                    <div class="guide">
+                        <div class="guide-step">
+                            <h4>Step 1 &mdash; Complete the WPM calculation</h4>
+                            <p><strong>What we're doing:</strong> Converting elapsed time in seconds to words per minute.</p>
+                            <p><strong>Why it matters:</strong> WPM is the standard measure for typing speed. The formula is: <code>words / (elapsed_seconds / 60)</code> or simplified: <code>words / elapsed_seconds * 60</code></p>
+                            <p><strong>How it works:</strong></p>
+                            <ul>
+                                <li><code>len(sentence.split())</code> counts words by splitting on spaces and counting the resulting list items</li>
+                                <li>We need to convert seconds to minutes: divide elapsed seconds by 60</li>
+                                <li>Then divide words by that time in minutes to get WPM</li>
+                                <li>Example: 10 words typed in 30 seconds → 10 / 0.5 = 20 WPM</li>
+                            </ul>
+                            <pre><code>def calculate_wpm(sentence, elapsed_seconds):
+    words = len(sentence.split())
+    
+    # Fill in the blank with: elapsed_seconds / 60
+    wpm = words / ( elapsed_seconds / 60 )
+    
+    return wpm
+</code></pre>
+                            <div class="apply-box"><strong>Apply it:</strong> The formula can also be written as <code>words * 60 / elapsed_seconds</code> — both work! Multiplying by 60 converts the rate to per-minute instead of per-second.</div>
+                        </div>
+
+                        <div class="guide-step">
+                            <h4>Step 2 &mdash; Count matching characters</h4>
+                            <p><strong>What we're doing:</strong> Using <code>zip()</code> to compare the original sentence with what the user typed, character by character.</p>
+                            <p><strong>Why it matters:</strong> <code>zip()</code> is perfect for comparing two sequences element-by-element. It pairs up characters from both strings automatically.</p>
+                            <p><strong>How it works:</strong></p>
+                            <ul>
+                                <li><code>zip(sentence, typed)</code> creates pairs: (s[0], t[0]), (s[1], t[1]), etc.</li>
+                                <li>The <code>for s_char, t_char in zip(...)</code> unpacks each pair into two variables</li>
+                                <li><code>zip()</code> stops at the shortest string's length automatically (important if user types less)</li>
+                                <li>We compare each pair: if they match, increment the counter</li>
+                            </ul>
+                            <pre><code>def calculate_accuracy(sentence, typed):
+    correct = 0
+    
+    for s_char, t_char in zip(sentence, typed):
+        # Fill in the blank: check if characters match
+        if s_char == t_char:
+            correct += 1
+    
+    # ... continue to step 3 ...
+</code></pre>
+                            <div class="apply-box"><strong>Apply it:</strong> <code>zip()</code> works with any iterables (lists, tuples, strings). Example: <code>zip([1,2,3], ['a','b','c'])</code> gives <code>(1,'a'), (2,'b'), (3,'c')</code>.</div>
+                        </div>
+
+                        <div class="guide-step">
+                            <h4>Step 3 &mdash; Calculate accuracy percentage</h4>
+                            <p><strong>What we're doing:</strong> Converting the count of correct characters into a percentage.</p>
+                            <p><strong>Why it matters:</strong> Percentages are easier to understand than raw counts. "80% accurate" is clearer than "36 out of 45 correct."</p>
+                            <p><strong>How it works:</strong></p>
+                            <ul>
+                                <li>We divide correct characters by total characters in the original sentence</li>
+                                <li>Multiply by 100 to convert decimal to percentage (0.8 → 80)</li>
+                                <li>Use <code>len(sentence)</code> for total, not <code>len(typed)</code>, because we're measuring accuracy against the target</li>
+                                <li>If user types less, they're penalized for missing characters (which <code>zip()</code> handles)</li>
+                            </ul>
+                            <pre><code>    # ... continued from step 2 ...
+    
+    # Fill in the blank with: len(sentence)
+    accuracy = (correct / len(sentence)) * 100
+    return accuracy
+</code></pre>
+                            <div class="apply-box"><strong>Apply it:</strong> To make accuracy stricter, you could require the user to type the same length: <code>if len(typed) != len(sentence): return 0</code> before calculating.</div>
+                        </div>
+
+                        <div class="guide-step">
+                            <h4>Understanding the main program flow</h4>
+                            <p><strong>What's happening:</strong> The main function you don't need to edit, but understanding it helps you test your functions.</p>
+                            <p><strong>Key points:</strong></p>
+                            <ul>
+                                <li><code>time.time()</code> returns current time in seconds since epoch (Jan 1, 1970)</li>
+                                <li>Subtracting <code>start</code> from <code>end</code> gives elapsed seconds</li>
+                                <li><code>input()</code> pauses the program until user presses Enter</li>
+                                <li>The formatting <code>{elapsed:.2f}</code> shows 2 decimal places (e.g., 12.34)</li>
+                                <li>The replay loop uses <code>while True</code> with <code>break</code> to exit</li>
+                            </ul>
+                            <pre><code>def typing_test():
+    sentence = "The quick brown fox jumps over the lazy dog."
+    
+    # Display and prepare
+    print("\nType this sentence:\n")
+    print(sentence)
+    input("\nPress Enter when you're ready...")
+    
+    # Time the typing
+    start = time.time()
+    typed = input("\nStart typing:\n")
+    end = time.time()
+    
+    elapsed = end - start
+    
+    # Calculate and display results
+    wpm = calculate_wpm(sentence, elapsed)
+    accuracy = calculate_accuracy(sentence, typed)
+    
+    print(f"\n--- Results ---")
+    print(f"Time taken : {elapsed:.2f} seconds")
+    print(f"WPM        : {wpm:.2f}")
+    print(f"Accuracy   : {accuracy:.2f}%")
+</code></pre>
+                            <div class="apply-box"><strong>Apply it:</strong> You can add different sentences as a list and use <code>random.choice()</code> to pick one randomly for variety.</div>
+                        </div>
+                    </div>
+
+                    <h3>Full Code Example (with TODOs filled)</h3>
+                    <pre><code>import time
+
+def calculate_wpm(sentence, elapsed_seconds):
+    words = len(sentence.split())
+    wpm = words / (elapsed_seconds / 60)
+    return wpm
+
+def calculate_accuracy(sentence, typed):
+    correct = 0
+    for s_char, t_char in zip(sentence, typed):
+        if s_char == t_char:
+            correct += 1
+    accuracy = (correct / len(sentence)) * 100
+    return accuracy
+
+def typing_test():
+    sentence = "The quick brown fox jumps over the lazy dog."
+    print("\nTyping Speed Test")
+    print("Type this sentence:\n")
+    print(sentence)
+
+    input("\nPress Enter when you're ready...")
+
+    start = time.time()
+    typed = input("\nStart typing:\n")
+    end = time.time()
+
+    elapsed = end - start
+
+    wpm = calculate_wpm(sentence, elapsed)
+    accuracy = calculate_accuracy(sentence, typed)
+
+    print("\n--- Results ---")
+    print(f"Time taken : {elapsed:.2f} seconds")
+    print(f"WPM        : {wpm:.2f}")
+    print(f"Accuracy   : {accuracy:.2f}%")
+
+def main():
+    while True:
+        typing_test()
+        again = input("\nTry again? (y/n): ").lower()
+        if again != "y":
+            print("\nGoodbye!")
+            break
+
+main()
+</code></pre>
+
+                    <h3>Key concepts from Week 9</h3>
+                    <div class="notes">
+                        <p><strong>This project reinforces these Week 9 learning goals:</strong></p>
+                        <ul>
+                            <li><strong>Time module:</strong> Using <code>time.time()</code> to measure elapsed time for performance tracking</li>
+                            <li><strong>String methods:</strong> <code>split()</code> to parse text into words, <code>len()</code> for counting</li>
+                            <li><strong>zip() function:</strong> Pairing elements from two iterables for simultaneous iteration</li>
+                            <li><strong>Mathematical formulas:</strong> Converting units (seconds to minutes) and calculating percentages</li>
+                            <li><strong>Formatted output:</strong> Using f-strings with <code>:.2f</code> to control decimal places</li>
+                            <li><strong>Function design:</strong> Creating focused functions that do one thing well and return calculated values</li>
+                        </ul>
+                    </div>
+
+                    <h3>Rubric (5 points)</h3>
+                    <div class="rubric">
+                        <div class="badge">WPM formula<div><span>Correctly converts time to minutes</span></div></div>
+                        <div class="badge">Character comparison<div><span>Uses zip() and comparison properly</span></div></div>
+                        <div class="badge">Accuracy calculation<div><span>Correct percentage formula</span></div></div>
+                        <div class="badge">Functions return values<div><span>Both functions work correctly</span></div></div>
+                        <div class="badge">Testing<div><span>Program runs without errors</span></div></div>
+                    </div>
+
+                    <h3>Level-up ideas</h3>
+                    <div class="notes">
+                        <ul>
+                            <li>Add a list of different sentences and randomly select one each round.</li>
+                            <li>Track personal best scores (WPM and accuracy) across multiple rounds.</li>
+                            <li>Show which specific characters were typed incorrectly (highlight mismatches).</li>
+                            <li>Add difficulty levels: short sentences (beginner), long paragraphs (advanced).</li>
+                            <li>Calculate CPM (characters per minute) in addition to WPM.</li>
+                            <li>Add a countdown timer mode where users have a fixed time limit (e.g., 60 seconds).</li>
+                            <li>Create a "practice mode" that focuses on commonly mistyped letter combinations.</li>
+                        </ul>
+                    </div>
+                </section>
+
                 <section class="card" id="teacher-notes">
                     <h2>Teacher notes & facilitation tips</h2>
                     <div class="notes">
@@ -1271,6 +1490,7 @@ while True:
             const projectB = document.getElementById('project-b');
             const projectC = document.getElementById('project-c');
             const projectD = document.getElementById('project-d');
+            const projectE = document.getElementById('project-e');
             const teacherNotes = document.getElementById('teacher-notes');
             
             // Remove active class from all links
@@ -1283,6 +1503,7 @@ while True:
                 projectB.style.display = 'none';
                 projectC.style.display = 'none';
                 projectD.style.display = 'none';
+                projectE.style.display = 'none';
                 teacherNotes.style.display = 'block';
                 
                 // Update header to personalize for Tyler
@@ -1297,6 +1518,7 @@ while True:
                 projectB.style.display = 'block';
                 projectC.style.display = 'none';
                 projectD.style.display = 'none';
+                projectE.style.display = 'none';
                 teacherNotes.style.display = 'block';
                 
                 // Update header to personalize for Jade
@@ -1311,6 +1533,7 @@ while True:
                 projectB.style.display = 'none';
                 projectC.style.display = 'block';
                 projectD.style.display = 'none';
+                projectE.style.display = 'none';
                 teacherNotes.style.display = 'block';
                 
                 // Update header to personalize for Litong
@@ -1325,6 +1548,7 @@ while True:
                 projectB.style.display = 'none';
                 projectC.style.display = 'none';
                 projectD.style.display = 'block';
+                projectE.style.display = 'none';
                 teacherNotes.style.display = 'block';
                 
                 // Update header to personalize for Jade Week 6
@@ -1334,12 +1558,28 @@ while True:
                 // Highlight Jade Week 6 button
                 document.querySelector('a[onclick="showProject(\'jade-week6\')"]').classList.add('active');
                 
+            } else if (student === 'jade-week9') {
+                projectA.style.display = 'none';
+                projectB.style.display = 'none';
+                projectC.style.display = 'none';
+                projectD.style.display = 'none';
+                projectE.style.display = 'block';
+                teacherNotes.style.display = 'block';
+                
+                // Update header to personalize for Jade Week 9
+                document.querySelector('header h1').textContent = 'Jade\'s Python Catch-Up Project (Week 9)';
+                document.querySelector('header p').textContent = 'Complete the Typing Speed Test project to practice the time module, WPM calculations, and accuracy checking. This project should take about an hour.';
+                
+                // Highlight Jade Week 9 button
+                document.querySelector('a[onclick="showProject(\'jade-week9\')"]').classList.add('active');
+                
             } else {
                 // Show all projects (teacher view)
                 projectA.style.display = 'block';
                 projectB.style.display = 'block';
                 projectC.style.display = 'block';
                 projectD.style.display = 'block';
+                projectE.style.display = 'block';
                 teacherNotes.style.display = 'block';
                 
                 // Reset header to original
